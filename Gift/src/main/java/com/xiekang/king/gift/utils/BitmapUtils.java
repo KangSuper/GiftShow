@@ -17,6 +17,7 @@ import java.util.concurrent.Executors;
 
 /**
  * Created by King on 2016/8/11.
+ *
  */
 public class BitmapUtils {
     private static ExecutorService executorService;
@@ -27,12 +28,10 @@ public class BitmapUtils {
      * @param urlString 请求的url
      */
     public static HttpThread load(String urlString) {
-        String TAG = "androidxx";
         if (executorService == null) {
             executorService = Executors.newFixedThreadPool(3);
         }
         HttpThread httpThread = new HttpThread();
-        Log.d(TAG, "load: ");
         httpThread.start(urlString);
         return httpThread;
     }
@@ -93,7 +92,6 @@ public class BitmapUtils {
          */
         class ImageRunnable implements Runnable {
             private String urlString;
-            private String TAG = "androidxx";
 
             public ImageRunnable(String urlString) {
                 this.urlString = urlString;
@@ -102,26 +100,20 @@ public class BitmapUtils {
             @Override
             public void run() {
                 try {
-                    Log.d(TAG, "run: ");
                     URL url = new URL(urlString);
                     HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                     conn.connect();
-                    Log.d(TAG, "run: connect");
-                    Log.d(TAG, "run: Code:" + conn.getResponseCode());
                     if (conn.getResponseCode() == HttpURLConnection.HTTP_OK) {
-                        Log.d(TAG, "run: Ok");
                         InputStream inputStream = conn.getInputStream();
                         int len = 0;
                         byte buffer[] = new byte[1024];
                         ByteArrayOutputStream baos = new ByteArrayOutputStream();
                         while ((len = inputStream.read(buffer)) != -1) {
                             baos.write(buffer, 0, len);
-                            Log.d(TAG, "run: len:" + len);
                         }
                         baos.flush();
                         inputStream.close();
                         byte[] bytes = baos.toByteArray();
-                        Log.d(TAG, "run: baos:" + baos);
                         Bitmap bitmap;
                         if (isCompress) {
                             BitmapFactory.Options options = new BitmapFactory.Options();

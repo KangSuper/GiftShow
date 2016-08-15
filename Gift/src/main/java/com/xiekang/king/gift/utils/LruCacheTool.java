@@ -7,7 +7,7 @@ import android.util.LruCache;
  * Created by King on 2016/8/4.
  */
 public class LruCacheTool {
-    public static LruCache<String,Bitmap> lruCache = new LruCache<String, Bitmap>(4*1024*1024){
+    public static LruCache<String,Bitmap> lruCache = new LruCache<String, Bitmap>(8*1024*1024){
         /**
          * 用来计算存入的Bitmap的大小
          * @param key 是一个URL

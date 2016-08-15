@@ -7,8 +7,8 @@
 
     <ImageView
         android:id="@+id/libao_item_image_view"
-        android:layout_width="90dp"
-        android:layout_height="90dp"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
         android:layout_centerVertical="true"/>
 
 
@@ -19,7 +19,7 @@
         android:layout_alignTop="@id/libao_item_image_view"
         android:layout_marginLeft="5dp"
         android:layout_toRightOf="@id/libao_item_image_view"
-        android:textSize="20dp" />
+        android:textSize="17dp" />
 
     <TextView
         android:id="@+id/libao_item_giftname_txt"
@@ -27,7 +27,7 @@
         android:layout_height="wrap_content"
         android:layout_alignLeft="@id/libao_item_gname_txt"
         android:layout_below="@id/libao_item_gname_txt"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="7dp"
         android:textColor="#d5d5d5" />
 
     <TextView
@@ -48,21 +48,30 @@
         android:layout_marginLeft="3dp" />
 
     <TextView
-        android:id="@+id/libao_item_addtime_txt"
+        android:id="@+id/libao_item_time_txt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBottom="@id/libao_item_image_view"
         android:layout_marginLeft="15dp"
         android:layout_toRightOf="@id/libao_item_number_txt" />
 
+    <TextView
+        android:id="@+id/libao_item_addtime_txt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/libao_item_image_view"
+        android:layout_marginLeft="4dp"
+        android:text="时间:"
+        android:layout_toRightOf="@id/libao_item_time_txt" />
+
     <Button
         android:id="@+id/libao_item_get_btn"
-        android:layout_width="90dp"
-        android:layout_height="40dp"
+        android:layout_width="80dp"
+        android:layout_height="30dp"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         android:background="@color/colorPrimary"
-        android:text="点击领取"
+        android:text="立即领取"
         android:textColor="#FFFFFF" />
 
 </RelativeLayout>

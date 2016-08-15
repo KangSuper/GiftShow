@@ -3,41 +3,62 @@ package com.xiekang.king.gift.libao;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import com.xiekang.king.gift.JavaBean.AdInfro;
 import com.xiekang.king.gift.R;
+import com.xiekang.king.gift.utils.BitmapUtils;
+import com.xiekang.king.gift.utils.HttpUtils;
+import com.xiekang.king.gift.utils.ICallBack;
 import com.xiekang.king.gift.utils.LruCacheTool;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Administrator on 2016/8/15
- *
  */
 
-public class AdFragment extends Fragment {
+public class AdFragment extends Fragment implements ICallBack {
 
-    private Message message;
     private ViewPager mViewPager;
     private LinearLayout mIndicatorLayout;
     private int childCount;
     public static final String urlString = "http://www.1688wan.com/majax.action?method=getGiftList";
     public static final String headString = "http://www.1688wan.com/";
-    private List<String> adUrlList = new ArrayList<>();
     private Context mContext;
     private MyPagerAdapter myPagerAdapter;
+    private List<AdInfro> adInfroList = new ArrayList<>();
 
+    private Handler mHandler = new Handler() {
+        int i = 0;
 
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            i++;
+            mViewPager.setCurrentItem(i % 5);
+            //回传消息实现循环滚动
+            mHandler.sendEmptyMessageDelayed(1, 3000);
+        }
+    };
 
     public static AdFragment newInstance() {
         AdFragment fragment = new AdFragment();
@@ -48,7 +69,10 @@ public class AdFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mContext = getContext();
-        message = new Message();
+        Map<String, Object> params = new HashMap<>();
+        //开启ViewPager的下载
+        params.put("pageno", 1);
+        HttpUtils.load(urlString).post(params).callBack(this, 3);
     }
 
     @Nullable
@@ -87,6 +111,57 @@ public class AdFragment extends Fragment {
         view.setEnabled(true);
     }
 
+    @Override
+    public void successJson(String result, int requestCode) {
+        if (requestCode == 3) {
+            try {
+                JSONObject jsonObj = new JSONObject(result);
+                JSONArray jsonArray = jsonObj.getJSONArray("ad");
+                Log.d("androidxxx", "successJson: jsonArray:" + jsonArray);
+                int length = jsonArray.length();
+                Log.d("androidxxx", "successJson: length" + length);
+                for (int i = 0; i < length; i++) {
+                    if (i == 0) {
+                        JSONObject jsonObject = jsonArray.getJSONObject(i);
+                        int id = jsonObject.getInt("id");
+                        String title = jsonObject.getString("title");
+                        int flag = jsonObject.getInt("flag");
+                        String addtime = jsonObject.getString("addtime");
+                        String linkurl = jsonObject.getString("linkurl");
+                        String giftid = jsonObject.getString("giftid");
+                        String appName = jsonObject.getString("appName");
+                        String appLogo = jsonObject.getString("appLogo");
+                        int appId = jsonObject.getInt("appId");
+                        String iconurl = headString + jsonObject.getString("iconurl");
+                        adInfroList.add(new AdInfro(id, title, flag, iconurl, addtime, linkurl, giftid, appName, appLogo, appId));
+                    }else {
+                        JSONObject jsonObject = jsonArray.getJSONObject(i);
+                        int id = jsonObject.getInt("id");
+                        String title = jsonObject.getString("title");
+                        int flag = jsonObject.getInt("flag");
+                        String addtime = jsonObject.getString("addtime");
+                        String giftid = jsonObject.getString("giftid");
+                        String appName = jsonObject.getString("appName");
+                        String appLogo = jsonObject.getString("appLogo");
+                        int appId = jsonObject.getInt("appId");
+                        String iconurl = headString + jsonObject.getString("iconurl");
+                        adInfroList.add(new AdInfro(id, title, flag, iconurl, addtime, null, giftid, appName, appLogo, appId));
+                    }
+                    Log.d("androidxxx", "successJson:adInfroList.size: " + adInfroList.size());
+                }
+                myPagerAdapter.notifyDataSetChanged();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        mHandler.sendEmptyMessageDelayed(1, 3000);
+    }
+
+    @Override
+    public void successBitmap(Bitmap bitmap, int requestCode) {
+
+    }
+
 
     /**
      * ViewPager的适配器
@@ -96,7 +171,8 @@ public class AdFragment extends Fragment {
         @Override
         public int getCount() {
 
-            return adUrlList.size();
+            Log.d("androidxxx", "getCount: size:" + adInfroList.size());
+            return adInfroList.size();
         }
 
         @Override
@@ -106,17 +182,36 @@ public class AdFragment extends Fragment {
 
         @Override
         public Object instantiateItem(ViewGroup container, int position) {
-            ImageView imageView = new ImageView(mContext);
+            final ImageView imageView = new ImageView(mContext);
             //设置默认资源
-            imageView.setImageResource(R.mipmap.ic_launcher);
-            String url = adUrlList.get(position);
+            imageView.setImageResource(R.drawable.applogo);
+
+            AdInfro adInfro = adInfroList.get(position);
+            final String iconurl = adInfro.getIconurl();
             //获取缓存里的图片资源
-            Bitmap bitmap = LruCacheTool.readCache(url);
+            Bitmap bitmap = LruCacheTool.readCache(iconurl);
             //当缓存里有时直接设置，否则开启线程下载
             if (bitmap != null) {
                 imageView.setImageBitmap(bitmap);
             } else {
-                imageView.setTag(url);
+                imageView.setTag(iconurl);
+                BitmapUtils.load(iconurl).callBack(new ICallBack() {
+                    @Override
+                    public void successJson(String result, int requestCode) {
+
+                    }
+
+                    @Override
+                    public void successBitmap(Bitmap bitmap, int requestCode) {
+                        Log.d("androidxxx", "successBitmap: ");
+                        if (imageView.getTag() == iconurl) {
+                            imageView.setImageBitmap(bitmap);
+                            imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                            LruCacheTool.writeCache(urlString, bitmap);
+                        }
+
+                    }
+                }, 4);
             }
             container.addView(imageView);
             return imageView;
@@ -149,7 +244,6 @@ public class AdFragment extends Fragment {
 
         }
     };
-
 
 
 }

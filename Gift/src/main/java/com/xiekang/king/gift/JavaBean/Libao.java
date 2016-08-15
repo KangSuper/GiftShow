@@ -71,6 +71,22 @@ public class Libao {
     }
 
     public static class AdBean {
+        @Override
+        public String toString() {
+            return "AdBean{" +
+                    "id=" + id +
+                    ", title='" + title + '\'' +
+                    ", flag=" + flag +
+                    ", iconurl='" + iconurl + '\'' +
+                    ", addtime='" + addtime + '\'' +
+                    ", linkurl='" + linkurl + '\'' +
+                    ", giftid='" + giftid + '\'' +
+                    ", appName='" + appName + '\'' +
+                    ", appLogo='" + appLogo + '\'' +
+                    ", appId=" + appId +
+                    '}';
+        }
+
         private int id;
         private String title;
         private int flag;
@@ -164,6 +180,25 @@ public class Libao {
     }
 
     public static class LibaoGiftBean {
+        @Override
+        public String toString() {
+            return "LibaoGiftBean{" +
+                    "id='" + id + '\'' +
+                    ", iconurl='" + iconurl + '\'' +
+                    ", giftname='" + giftname + '\'' +
+                    ", number=" + number +
+                    ", exchanges=" + exchanges +
+                    ", type=" + type +
+                    ", gname='" + gname + '\'' +
+                    ", integral=" + integral +
+                    ", isintegral=" + isintegral +
+                    ", addtime='" + addtime + '\'' +
+                    ", ptype='" + ptype + '\'' +
+                    ", operators='" + operators + '\'' +
+                    ", flag=" + flag +
+                    '}';
+        }
+
         private String id;
         private String iconurl;
         private String giftname;
@@ -281,5 +316,14 @@ public class Libao {
         public void setFlag(int flag) {
             this.flag = flag;
         }
+    }
+
+    @Override
+    public String toString() {
+        return "Libao{" +
+                "pageno=" + pageno +
+                ", ad=" + ad +
+                ", list=" + list +
+                '}';
     }
 }
