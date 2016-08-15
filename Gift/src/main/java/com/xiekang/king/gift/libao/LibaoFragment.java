@@ -1,6 +1,7 @@
 package com.xiekang.king.gift.libao;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -19,6 +20,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
+import com.xiekang.king.gift.DetailsActivity;
 import com.xiekang.king.gift.JavaBean.LibaoInfo;
 import com.xiekang.king.gift.R;
 import com.xiekang.king.gift.utils.BitmapUtils;
@@ -42,8 +44,8 @@ import java.util.Map;
 public class LibaoFragment extends Fragment implements ICallBack {
 
 
-    public static final String urlString = "http://www.1688wan.com/majax.action?method=getGiftList";
-    public static final String headString = "http://www.1688wan.com/";
+    public  final String urlString = "http://www.1688wan.com/majax.action?method=getGiftList";
+    public  final String headString = "http://www.1688wan.com/";
     private Context mContext;
     private ListView mListView;
     private FragmentManager fragmentManager;
@@ -89,11 +91,16 @@ public class LibaoFragment extends Fragment implements ICallBack {
         fragmentTransaction.add(R.id.ad_frame_layout, new AdFragment().newInstance());
         fragmentTransaction.commit();
 
+
         mLibaoAdapter = new LibaoAdapter();
         mListView.setAdapter(mLibaoAdapter);
+
         return view;
 
     }
+
+
+
 
     @Override
     public void successJson(String result, int requestCode) {
@@ -158,7 +165,7 @@ public class LibaoFragment extends Fragment implements ICallBack {
         }
 
         @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
+        public View getView(final int position, View convertView, ViewGroup parent) {
             final ViewHolder viewHolder;
             if (convertView == null) {
                 convertView = LayoutInflater.from(mContext).inflate(R.layout.libao_item_list, parent, false);
@@ -168,7 +175,7 @@ public class LibaoFragment extends Fragment implements ICallBack {
             }
             viewHolder.imageView.setImageResource(R.drawable.applogo);
 
-            LibaoInfo libaoInfo = giftList.get(position);
+            final LibaoInfo libaoInfo = giftList.get(position);
             String gname = libaoInfo.getGname();
             String giftname = libaoInfo.getGiftname();
             String addtime = libaoInfo.getAddtime();
@@ -207,6 +214,18 @@ public class LibaoFragment extends Fragment implements ICallBack {
                     }
                 }, 2);
             }
+
+            convertView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    String id = libaoInfo.getId();
+                    Intent intent = new Intent();
+                    intent.putExtra("id",id);
+                    intent.setClass(mContext, DetailsActivity.class);
+                    startActivity(intent);
+                }
+            });
+
             return convertView;
         }
 

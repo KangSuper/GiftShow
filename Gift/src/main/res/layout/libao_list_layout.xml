@@ -7,5 +7,6 @@
     <com.handmark.pulltorefresh.library.PullToRefreshListView
         android:id="@+id/libao_list_view"
         android:layout_width="match_parent"
+        android:descendantFocusability="blocksDescendants"
         android:layout_height="match_parent"/>
 </RelativeLayout>

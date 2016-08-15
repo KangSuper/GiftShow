@@ -72,6 +72,7 @@
         android:layout_centerVertical="true"
         android:background="@color/colorPrimary"
         android:text="立即领取"
+        android:clickable="false"
         android:textColor="#FFFFFF" />
 
 </RelativeLayout>
