@@ -4,7 +4,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.RectF;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -19,6 +22,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.xiekang.king.gift.DetailsActivity;
 import com.xiekang.king.gift.JavaBean.LibaoInfo;
@@ -32,7 +36,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -44,15 +50,26 @@ import java.util.Map;
 public class LibaoFragment extends Fragment implements ICallBack {
 
 
-    public  final String urlString = "http://www.1688wan.com/majax.action?method=getGiftList";
-    public  final String headString = "http://www.1688wan.com/";
+    public final String urlString = "http://www.1688wan.com/majax.action?method=getGiftList";
+    public final String headString = "http://www.1688wan.com/";
     private Context mContext;
     private ListView mListView;
     private FragmentManager fragmentManager;
     private LibaoAdapter mLibaoAdapter;
     private List<LibaoInfo> giftList;
     private int page = 1;
+    private PullToRefreshListView refreshView;
     private String TAG = "androidxx";
+
+    private Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            //加载数据完成之后，通知刷新控件结束刷新动作
+            refreshView.onRefreshComplete();
+            mLibaoAdapter.notifyDataSetChanged();
+        }
+    };
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -81,7 +98,13 @@ public class LibaoFragment extends Fragment implements ICallBack {
         //加载广告视图
         View topView = inflater.inflate(R.layout.ad_top_layout, null);
         //获取ListView控件
-        PullToRefreshListView refreshView = (PullToRefreshListView) view.findViewById(R.id.libao_list_view);
+        refreshView = (PullToRefreshListView) view.findViewById(R.id.libao_list_view);
+        //设置模式
+        refreshView.setMode(PullToRefreshBase.Mode.BOTH);
+        //设置上拉下拉监听
+        refreshView.setOnRefreshListener(refreshListener2);
+        //
+        refreshView.setLastUpdatedLabel(getTime());
         //将RefreshView转换成ListView
         mListView = refreshView.getRefreshableView();
         //
@@ -99,8 +122,53 @@ public class LibaoFragment extends Fragment implements ICallBack {
 
     }
 
+    private PullToRefreshBase.OnRefreshListener2 refreshListener2 = new PullToRefreshBase.OnRefreshListener2() {
+        //下拉
+        @Override
+        public void onPullDownToRefresh(PullToRefreshBase refreshView) {
+            refreshView.setLastUpdatedLabel(getTime());
+            giftList.clear();
+            page = 1;
+            Map<String, Object> params = new HashMap<>();
+            params.put("pageno", page);
+            HttpUtils.load(urlString).post(params).callBack(new ICallBack() {
+                @Override
+                public void successJson(String result, int requestCode) {
+                    if (requestCode == 1) {
+                        getLibaoInfo(result);
+                    }
+                    mHandler.sendEmptyMessageDelayed(1, 100);
+                }
 
+                @Override
+                public void successBitmap(Bitmap bitmap, int requestCode) {
+                }
+            }, 1);
+        }
 
+        //上拉
+        @Override
+        public void onPullUpToRefresh(PullToRefreshBase refreshView) {
+            refreshView.setLastUpdatedLabel(getTime());
+            page += 2;
+            Map<String, Object> params = new HashMap<>();
+            params.put("pageno", page);
+            HttpUtils.load(urlString).post(params).callBack(new ICallBack() {
+                @Override
+                public void successJson(String result, int requestCode) {
+                    if (requestCode == 1) {
+                        getLibaoInfo(result);
+                        mHandler.sendEmptyMessageDelayed(1, 100);
+                    }
+                }
+
+                @Override
+                public void successBitmap(Bitmap bitmap, int requestCode) {
+
+                }
+            }, 1);
+        }
+    };
 
     @Override
     public void successJson(String result, int requestCode) {
@@ -205,7 +273,7 @@ public class LibaoFragment extends Fragment implements ICallBack {
 
                     @Override
                     public void successBitmap(Bitmap bitmap, int requestCode) {
-                        if (requestCode == 2){
+                        if (requestCode == 2) {
                             LruCacheTool.writeCache(iconurl, bitmap);
                             if (viewHolder.imageView.getTag() == iconurl) {
                                 viewHolder.imageView.setImageBitmap(bitmap);
@@ -220,7 +288,7 @@ public class LibaoFragment extends Fragment implements ICallBack {
                 public void onClick(View v) {
                     String id = libaoInfo.getId();
                     Intent intent = new Intent();
-                    intent.putExtra("id",id);
+                    intent.putExtra("id", id);
                     intent.setClass(mContext, DetailsActivity.class);
                     startActivity(intent);
                 }
@@ -249,6 +317,13 @@ public class LibaoFragment extends Fragment implements ICallBack {
         }
 
 
+    }
+
+    private String getTime() {
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy年MM月dd日    HH:mm:ss");
+        Date curDate = new Date(System.currentTimeMillis());//获取当前时间
+        String str = formatter.format(curDate);
+        return str;
     }
 
 
