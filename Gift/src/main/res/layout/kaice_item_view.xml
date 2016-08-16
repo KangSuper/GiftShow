@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="8dp">
+
+    <ImageView
+        android:id="@+id/kaice_image_view"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_centerVertical="true"
+        android:src="@drawable/applogo" />
+
+    <TextView
+        android:id="@+id/kaice_gname_txt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@id/kaice_image_view"
+        android:layout_marginLeft="8dp"
+        android:layout_toRightOf="@id/kaice_image_view"
+        android:textSize="20dp" />
+
+
+    <TextView
+        android:id="@+id/kaice_operators"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@id/kaice_gname_txt"
+        android:layout_below="@id/kaice_gname_txt"
+        android:layout_marginTop="10dp"
+        android:text="运营商:" />
+
+    <TextView
+        android:id="@+id/kaice_operators_txt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@id/kaice_operators"
+        android:layout_marginLeft="2dp"
+        android:layout_toRightOf="@id/kaice_operators" />
+
+    <ImageView
+        android:id="@+id/g_gao_image"
+        android:layout_width="13dp"
+        android:layout_height="13dp"
+        android:layout_alignBottom="@id/kaice_image_view"
+        android:layout_alignLeft="@id/kaice_operators"
+        android:layout_marginBottom="2dp"
+        android:src="@drawable/g_biao" />
+
+    <TextView
+        android:id="@+id/kaice_addtime_txt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/colorPrimary"
+        android:layout_toRightOf="@id/g_gao_image"
+        android:layout_alignBottom="@id/kaice_image_view"
+        android:layout_marginLeft="6dp"/>
+
+
+    <Button
+        android:id="@+id/kaice_check_btn"
+        android:layout_width="55dp"
+        android:layout_height="30dp"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:background="@color/colorPrimary"
+        android:text="查看"
+        android:textColor="#ffffff" />
+
+</RelativeLayout>

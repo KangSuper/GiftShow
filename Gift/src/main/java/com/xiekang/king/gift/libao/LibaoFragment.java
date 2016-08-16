@@ -127,10 +127,10 @@ public class LibaoFragment extends Fragment implements ICallBack {
         @Override
         public void onPullDownToRefresh(PullToRefreshBase refreshView) {
             refreshView.setLastUpdatedLabel(getTime());
-            giftList.clear();
             page = 1;
             Map<String, Object> params = new HashMap<>();
             params.put("pageno", page);
+            giftList.clear();
             HttpUtils.load(urlString).post(params).callBack(new ICallBack() {
                 @Override
                 public void successJson(String result, int requestCode) {

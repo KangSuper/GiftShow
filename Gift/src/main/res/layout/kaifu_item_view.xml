@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="8dp">
+
+    <ImageView
+        android:id="@+id/kaifu_image_view"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_centerVertical="true"
+        android:src="@drawable/applogo" />
+
+    <TextView
+        android:id="@+id/kaifu_gname_txt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@id/kaifu_image_view"
+        android:layout_marginLeft="8dp"
+        android:textSize="18dp"
+        android:layout_toRightOf="@id/kaifu_image_view"
+        android:text="皇图" />
+
+    <ImageView
+        android:layout_width="15dp"
+        android:layout_height="15dp"
+        android:layout_alignLeft="@id/kaifu_gname_txt"
+        android:layout_below="@id/kaifu_gname_txt"
+        android:layout_marginTop="14dp"
+        android:src="@drawable/g_biao" />
+
+    <TextView
+        android:id="@+id/kaifu_starttime_txt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/kaifu_gname_txt"
+        android:layout_marginLeft="24dp"
+        android:layout_marginTop="10dp"
+        android:layout_toRightOf="@id/kaifu_image_view"
+        android:textColor="@color/colorPrimary"/>
+
+
+    <TextView
+        android:id="@+id/kaifu_area_txt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@id/kaifu_starttime_txt"
+        android:layout_marginLeft="30dp"
+        android:layout_toRightOf="@id/kaifu_starttime_txt" />
+
+    <TextView
+        android:id="@+id/kaifu_operators"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@id/kaifu_gname_txt"
+        android:text="运营商:"
+        android:layout_alignBottom="@id/kaifu_image_view"/>
+
+    <TextView
+        android:id="@+id/kaifu_operators_txt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@id/kaifu_operators"
+        android:layout_marginLeft="2dp"
+        android:layout_toRightOf="@id/kaifu_operators"
+        android:text="9377"/>
+
+
+    <Button
+        android:id="@+id/kaifu_check_btn"
+        android:layout_width="55dp"
+        android:layout_height="30dp"
+        android:text="查看"
+        android:textColor="#ffffff"
+        android:background="@color/colorPrimary"
+        android:layout_centerVertical="true"
+        android:layout_alignParentRight="true"/>
+
+</RelativeLayout>
