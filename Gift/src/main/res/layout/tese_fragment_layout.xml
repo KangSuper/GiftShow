@@ -6,7 +6,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <android.support.design.widget.TabLayout
-        android:id="@+id/youxi_tab_layout"
+        android:id="@+id/tese_tab_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:tabMode="fixed"
@@ -22,8 +22,8 @@
         android:background="#000000"/>
 
     <android.support.v4.view.ViewPager
-        android:layout_below="@id/youxi_tab_layout"
-        android:id="@+id/youxi_view_pager"
+        android:layout_below="@id/tese_tab_layout"
+        android:id="@+id/tese_view_pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 </RelativeLayout>

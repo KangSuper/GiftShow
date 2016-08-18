@@ -1,5 +1,6 @@
 package com.xiekang.king.gift;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -10,6 +11,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.xiekang.king.gift.hot.HotFragment;
 import com.xiekang.king.gift.libao.LibaoFragment;
@@ -47,6 +49,15 @@ public class MainActivity extends BaseActivity {
         mMenuImg = (ImageView) view.findViewById(R.id.bar_menu_view);
         mTextTxt = (TextView) view.findViewById(R.id.bar_text_view);
         mSearchTxt = (TextView) view.findViewById(R.id.bar_search_text);
+
+        mSearchTxt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this,SearchActivity.class);
+                Toast.makeText(MainActivity.this,"搜索",Toast.LENGTH_SHORT).show();
+                startActivity(intent);
+            }
+        });
         supportActionBar.setCustomView(view);
     }
 

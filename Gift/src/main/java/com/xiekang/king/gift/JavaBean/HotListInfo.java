@@ -60,4 +60,16 @@ public class HotListInfo {
     public String getSize() {
         return size;
     }
+
+    @Override
+    public String toString() {
+        return "HotListInfo{" +
+                "appid='" + appid + '\'' +
+                ", clicks='" + clicks + '\'' +
+                ", name='" + name + '\'' +
+                ", typename='" + typename + '\'' +
+                ", logo='" + logo + '\'' +
+                ", size='" + size + '\'' +
+                '}';
+    }
 }

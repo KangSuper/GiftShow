@@ -6,59 +6,162 @@
     tools:context="com.xiekang.king.gift.MainActivity">
 
 
-    <FrameLayout
-        android:id="@+id/main_frame_layout"
+    <android.support.v4.widget.DrawerLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginBottom="50dp"
-        android:orientation="horizontal" />
+        android:layout_height="match_parent">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <FrameLayout
+                android:id="@+id/main_frame_layout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="50dp"
+                android:orientation="horizontal" />
 
-    <RadioGroup
-        android:id="@+id/gift_radio_group"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:orientation="horizontal">
+            <RadioGroup
+                android:id="@+id/gift_radio_group"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:orientation="horizontal">
 
-        <RadioButton
-            android:id="@+id/gift_libao_rb"
-            android:layout_width="0dp"
+                <RadioButton
+                    android:id="@+id/gift_libao_rb"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:button="@null"
+                    android:checked="true"
+                    android:drawableBottom="@drawable/libao_selector"
+                    android:gravity="center_horizontal"
+                    android:paddingBottom="5dp" />
+
+                <RadioButton
+                    android:id="@+id/gift_youxi_rb"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:button="@null"
+                    android:drawableBottom="@drawable/youxi_selector"
+                    android:paddingBottom="5dp" />
+
+                <RadioButton
+                    android:id="@+id/gift_hot_rb"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:button="@null"
+                    android:drawableBottom="@drawable/hot_selector"
+                    android:gravity="center"
+                    android:paddingBottom="5dp" />
+
+                <RadioButton
+                    android:id="@+id/gift_tese_rb"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:button="@null"
+                    android:drawableBottom="@drawable/tese_selector"
+                    android:gravity="center"
+                    android:paddingBottom="5dp" />
+
+            </RadioGroup>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="200dp"
+            android:layout_gravity="left"
             android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:button="@null"
-            android:checked="true"
-            android:drawableBottom="@drawable/libao_selector"
-            android:gravity="center_horizontal"
-            android:paddingBottom="5dp" />
+            android:background="@drawable/menu_background"
+            xmlns:app="http://schemas.android.com/apk/res-auto">
+            <com.xiekang.king.gift.customview.CircleImageView
+                android:id="@+id/drawer_circle_view"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:src="@drawable/applogo"
+                app:civ_border_width="2dp"
+                app:civ_border_color="#ffffff"/>
 
-        <RadioButton
-            android:id="@+id/gift_youxi_rb"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:button="@null"
-            android:drawableBottom="@drawable/youxi_selector"
-            android:paddingBottom="5dp" />
+            <TextView
+                android:id="@+id/drawer_load_txt"
+                android:text="请登录"
+                android:textColor="#ffffff"
+                android:layout_toRightOf="@id/drawer_circle_view"
+                android:layout_marginTop="40dp"
+                android:layout_marginLeft="10dp"
+                android:textSize="20dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
 
-        <RadioButton
-            android:id="@+id/gift_hot_rb"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:button="@null"
-            android:drawableBottom="@drawable/hot_selector"
-            android:gravity="center"
-            android:paddingBottom="5dp" />
+            <TextView
+                android:id="@+id/drawer_gold_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0"
+                android:textSize="16dp"
+                android:textColor="#ffffff"
+                android:layout_alignBottom="@id/drawer_circle_view"
+                android:layout_alignLeft="@id/drawer_load_txt"
+                android:drawableRight="@drawable/gb"
+                android:drawablePadding="10dp"/>
 
-        <RadioButton
-            android:id="@+id/gift_tese_rb"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:button="@null"
-            android:drawableBottom="@drawable/tese_selector"
-            android:gravity="center"
-            android:paddingBottom="5dp" />
+            <TextView
+                android:id="@+id/drawer_home_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="10dp"
+                android:drawableLeft="@drawable/icon_home"
+                android:drawablePadding="10dp"
+                android:text="主页"
+                android:textColor="#ffffff"
+                android:textSize="25dp" />
 
-    </RadioGroup>
+            <TextView
+                android:id="@+id/drawer_gift_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:drawableLeft="@drawable/my_gift"
+                android:drawablePadding="10dp"
+                android:text="我的礼包"
+                android:textColor="#ffffff"
+                android:layout_below="@id/drawer_home_text_view"
+                android:layout_marginTop="15dp"
+                android:textSize="25dp" />
+
+            <TextView
+                android:id="@+id/drawer_option_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:drawableLeft="@drawable/send_email"
+                android:drawablePadding="10dp"
+                android:text="提个建议"
+                android:textColor="#ffffff"
+                android:layout_below="@id/drawer_gift_text_view"
+                android:layout_marginTop="15dp"
+                android:textSize="25dp" />
+
+            <TextView
+                android:id="@+id/drawer_about_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:drawableLeft="@drawable/about_me"
+                android:drawablePadding="10dp"
+                android:text="关于我们"
+                android:textColor="#ffffff"
+                android:layout_below="@id/drawer_option_text_view"
+                android:layout_marginTop="15dp"
+                android:textSize="25dp" />
+
+
+
+
+        </RelativeLayout>
+    </android.support.v4.widget.DrawerLayout>
+
+
 </RelativeLayout>

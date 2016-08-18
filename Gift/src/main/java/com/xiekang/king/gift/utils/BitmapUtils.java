@@ -29,7 +29,7 @@ public class BitmapUtils {
      */
     public static HttpThread load(String urlString) {
         if (executorService == null) {
-            executorService = Executors.newFixedThreadPool(3);
+            executorService = Executors.newFixedThreadPool(10);
         }
         HttpThread httpThread = new HttpThread();
         httpThread.start(urlString);

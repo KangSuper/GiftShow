@@ -46,8 +46,8 @@ public class YouxiFragment extends Fragment {
         kaifuFragment = KaifuFragment.newInstance();
         fragmentList.add(kaifuFragment);
         fragmentList.add(kaiceFragment);
-        titles.add("                 开服                 ");
-        titles.add("                 开测                 ");
+        titles.add("                       开服                             ");
+        titles.add("                       开测                             ");
     }
 
     public static YouxiFragment newInstance() {
@@ -61,8 +61,8 @@ public class YouxiFragment extends Fragment {
         View view = inflater.inflate(R.layout.youxi_list_layout, container, false);
         tabLayout = (TabLayout) view.findViewById(R.id.youxi_tab_layout);
         //在ViewPager里重写getPagerTitle才能显示
-        tabLayout.addTab(tabLayout.newTab().setText("开服"));
-        tabLayout.addTab(tabLayout.newTab().setText("开测"));
+        tabLayout.addTab(tabLayout.newTab());
+        tabLayout.addTab(tabLayout.newTab());
 
         mViewPager = (ViewPager) view.findViewById(R.id.youxi_view_pager);
         mFragmentPagerAdapter = new MyFragmentPagerAdapter(getFragmentManager());

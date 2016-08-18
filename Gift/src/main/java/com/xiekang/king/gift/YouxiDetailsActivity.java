@@ -1,12 +1,21 @@
 package com.xiekang.king.gift;
 
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.drawable.Icon;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +23,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.xiekang.king.gift.JavaBean.YxiInfo;
 import com.xiekang.king.gift.utils.BitmapUtils;
@@ -25,6 +35,13 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -46,12 +63,29 @@ public class YouxiDetailsActivity extends AppCompatActivity implements ICallBack
     private TextView mNameTxt;
     private List<String> imageList = new ArrayList<>();
     private MyAdapter mAdapter;
+    private ImageButton mShareImageBtn;
+    private NotificationManager notificationManager;
+    private Notification.Builder builder;
+    private final File externalStoragePublicDirectory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+
+    private Handler mHandler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            if (msg.what == 1){
+                install();
+            }
+        }
+    };
+    private String TAG = "downPicture";
+    private String mPath;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        initActionBar();
         setContentView(R.layout.activity_youxi_details);
+        notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        initActionBar();
         getIntentFromFragment();
         initView();
     }
@@ -59,11 +93,13 @@ public class YouxiDetailsActivity extends AppCompatActivity implements ICallBack
     private void initActionBar() {
         ActionBar supportActionBar = getSupportActionBar();
         supportActionBar.setDisplayShowCustomEnabled(true);
-        View view = LayoutInflater.from(this).inflate(R.layout.yxdetails_bar_view, null,false);
+        View view = LayoutInflater.from(this).inflate(R.layout.details_bar_view, null, false);
         supportActionBar.setCustomView(view);
-        mBackImageBtn = (ImageButton) view.findViewById(R.id.yx_back_image_view);
+        mBackImageBtn = (ImageButton) view.findViewById(R.id.back_image_view);
         mBackImageBtn.setOnClickListener(backClickListener);
-        mTitleTxt = (TextView) view.findViewById(R.id.yx_title_text_view);
+        mTitleTxt = (TextView) view.findViewById(R.id.title_text_view);
+        mShareImageBtn = (ImageButton) view.findViewById(R.id.share_image_view);
+        mShareImageBtn.setVisibility(View.INVISIBLE);
     }
 
     //后退键的监听
@@ -120,11 +156,40 @@ public class YouxiDetailsActivity extends AppCompatActivity implements ICallBack
                     }
                 }
             }, 12);
-        }else {
-            if (mLogoImg.getTag().equals(logoUrl)){
+        } else {
+            if (mLogoImg.getTag().equals(logoUrl)) {
                 mLogoImg.setImageBitmap(bitmap);
             }
         }
+
+        if (download_addr.equals("")) {
+            mDownBtn.setText("暂无下载");
+            mDownBtn.setBackgroundColor(Color.GRAY);
+            mDownBtn.setClickable(false);
+        } else {
+            mDownBtn.setText("立即下载");
+            mDownBtn.setBackgroundColor(Color.rgb(251, 67, 62));
+            mDownBtn.setClickable(true);
+        }
+        //下载按钮的监听
+        mDownBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                File file = new File(externalStoragePublicDirectory +mPath);
+                if (file.exists()) {
+                    Toast.makeText(YouxiDetailsActivity.this, "已经下载", Toast.LENGTH_SHORT).show();
+                    install();
+                    return;
+                }
+                showNotification();
+                mPath = getPath(yxiInfo.getDownload_addr());
+                Toast.makeText(YouxiDetailsActivity.this, "正在下载", Toast.LENGTH_SHORT).show();
+                new Thread(new DownRunnable(yxiInfo.getDownload_addr())).start();
+                mDownBtn.setText("正在下载");
+                mDownBtn.setBackgroundColor(Color.GRAY);
+                mDownBtn.setClickable(false);
+            }
+        });
     }
 
     private void getIntentFromFragment() {
@@ -224,5 +289,70 @@ public class YouxiDetailsActivity extends AppCompatActivity implements ICallBack
 
         }
     }
+
+    private String getPath(String address){
+        String temp = address;
+        int index = temp.lastIndexOf("/");
+        String substring = address.substring(index);
+        return substring;
+    }
+
+    class DownRunnable implements Runnable {
+
+        private String downLoad_addr;
+
+        public DownRunnable(String downLoad_addr) {
+            this.downLoad_addr = downLoad_addr;
+        }
+
+        @Override
+        public void run() {
+            InputStream inputStream = null;
+            FileOutputStream fileOutputStream = null;
+            try {
+                URL url = new URL(downLoad_addr);
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                connection.connect();
+                if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
+                    fileOutputStream = new FileOutputStream(externalStoragePublicDirectory + mPath);
+                    inputStream = connection.getInputStream();
+                    int len = 0;
+                    byte buffer[] = new byte[1024];
+                    while ((len = inputStream.read(buffer)) != -1) {
+                        fileOutputStream.write(buffer, 0, len);
+                        Log.d(TAG, "run: len:"+len);
+                    }
+                    fileOutputStream.flush();
+                    builder.setContentTitle("提示");
+                    builder.setContentText("下载完成");
+                    notificationManager.notify(88002201,builder.getNotification());
+                    Message message = mHandler.obtainMessage();
+                    message.what = 1;
+                    message.sendToTarget();
+                }
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void showNotification() {
+        builder = new Notification.Builder(this);
+        builder.setSmallIcon(R.drawable.applogo);
+        builder.setContentTitle("正在下载...");
+        Notification notification = builder.getNotification();
+        notificationManager.notify(88002201,notification);
+    }
+
+    private void install(){
+        File externalStoragePublicDirectory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+        File file = new File(externalStoragePublicDirectory+mPath);
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setDataAndType(Uri.fromFile(file),"application/vnd.android.package-archive");
+        startActivity(intent);
+    }
+
 
 }
