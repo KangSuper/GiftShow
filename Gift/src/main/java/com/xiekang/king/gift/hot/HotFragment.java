@@ -86,7 +86,6 @@ public class HotFragment extends Fragment implements ICallBack{
                 for (int i = 0; i < push1.length(); i++) {
                     Gson gson = new Gson();
                     HotListInfo hotListInfo = gson.fromJson(push1.get(i).toString(), HotListInfo.class);
-                    Log.d("androidxx", "successJson: hostListInfo:"+hotListInfo.toString());
                     hotListInfoList.add(hotListInfo);
                 }
                 myAdapter.notifyDataSetChanged();

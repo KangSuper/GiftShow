@@ -31,4 +31,12 @@
         android:text="dasasd656"
         android:textColor="#ffffff" />
 
+    <ImageView
+        android:src="@drawable/alpha_shape"
+        android:layout_width="match_parent"
+        android:layout_alignLeft="@id/weekly_top_desc_txt"
+        android:layout_alignTop="@id/weekly_top_desc_txt"
+        android:layout_alignBottom="@id/weekly_top_img_view"
+        android:layout_height="wrap_content" />
+
 </RelativeLayout>

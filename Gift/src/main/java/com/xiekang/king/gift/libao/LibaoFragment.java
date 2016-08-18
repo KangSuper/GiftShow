@@ -59,7 +59,6 @@ public class LibaoFragment extends Fragment implements ICallBack {
     private List<LibaoInfo> giftList;
     private int page = 1;
     private PullToRefreshListView refreshView;
-    private String TAG = "androidxx";
 
     private Handler mHandler = new Handler() {
         @Override
@@ -187,11 +186,9 @@ public class LibaoFragment extends Fragment implements ICallBack {
         try {
             JSONObject jsonObj = new JSONObject(result);
             JSONArray jsonArray = jsonObj.getJSONArray("list");
-            Log.d(TAG, "getLibaoInfo: jsonArray:" + jsonArray.toString());
             int length = jsonArray.length();
             for (int i = 0; i < length; i++) {
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
-                Log.d(TAG, "getLibaoInfo: jsonObject:" + jsonObject.toString());
                 String giftname = jsonObject.getString("giftname");
                 String gname = jsonObject.getString("gname");
                 String iconurl = headString + jsonObject.getString("iconurl");
@@ -207,7 +204,6 @@ public class LibaoFragment extends Fragment implements ICallBack {
                 int flag = jsonObject.getInt("flag");
                 giftList.add(new LibaoInfo(id, iconurl, giftname, number, exchanges, type, gname, integral, isintegral, addtime, ptype, operators, flag));
                 mLibaoAdapter.notifyDataSetChanged();
-                Log.d(TAG, "getLibaoInfo: giftList:" + giftList.toString());
             }
         } catch (JSONException e) {
             e.printStackTrace();

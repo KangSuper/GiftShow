@@ -4,7 +4,6 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/Gift/Gift.iml" filepath="$PROJECT_DIR$/Gift/Gift.iml" />
       <module fileurl="file://$PROJECT_DIR$/GiftShow.iml" filepath="$PROJECT_DIR$/GiftShow.iml" />
-      <module fileurl="file://$PROJECT_DIR$/Gift/app.iml" filepath="$PROJECT_DIR$/Gift/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/refreshLibrary/refreshLibrary.iml" filepath="$PROJECT_DIR$/refreshLibrary/refreshLibrary.iml" />
     </modules>
   </component>

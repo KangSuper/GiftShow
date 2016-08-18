@@ -2,10 +2,9 @@ package com.xiekang.king.gift;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -19,10 +18,13 @@ import com.xiekang.king.gift.utils.BitmapUtils;
 import com.xiekang.king.gift.utils.HttpUtils;
 import com.xiekang.king.gift.utils.ICallBack;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.HashMap;
 import java.util.Map;
 
-public class DetailsActivity extends AppCompatActivity implements ICallBack{
+public class DetailsActivity extends AppCompatActivity implements ICallBack {
 
     private CircleImageView circleImageView;
     private TextView mTimeTxt;
@@ -38,7 +40,7 @@ public class DetailsActivity extends AppCompatActivity implements ICallBack{
     private ImageButton mShareImageBtn;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState){
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_details);
 
@@ -47,12 +49,12 @@ public class DetailsActivity extends AppCompatActivity implements ICallBack{
         initView();
     }
 
-    private void initActionBar(){
+    private void initActionBar() {
         //设置可自定义ActionBar
         ActionBar supportActionBar = getSupportActionBar();
         supportActionBar.setDisplayShowCustomEnabled(true);
         //获取view
-        View view = LayoutInflater.from(this).inflate(R.layout.details_bar_view,null);
+        View view = LayoutInflater.from(this).inflate(R.layout.details_bar_view, null);
 
         mBackImageBtn = (ImageButton) view.findViewById(R.id.back_image_view);
         mBackImageBtn.setOnClickListener(backClickListener);
@@ -72,17 +74,14 @@ public class DetailsActivity extends AppCompatActivity implements ICallBack{
     };
 
 
-
-    private void getIntentFromFragment(){
+    private void getIntentFromFragment() {
         //获取传值
         Intent intent = getIntent();
         String id = intent.getStringExtra("id");
-        Map<String,Object> params = new HashMap<>();
-        params.put("id",id);
-        HttpUtils.load(urlString).post(params).callBack(this,5);
+        Map<String, Object> params = new HashMap<>();
+        params.put("id", id);
+        HttpUtils.load(urlString).post(params).callBack(this, 5);
     }
-
-
 
 
     private void initView() {
@@ -96,9 +95,8 @@ public class DetailsActivity extends AppCompatActivity implements ICallBack{
 
     @Override
     public void successJson(String result, int requestCode) {
-        if (requestCode == 5){
-            Log.d(TAG, "successJson: result:"+result);
-           setView(result);
+        if (requestCode == 5) {
+            setView(result);
         }
     }
 
@@ -107,39 +105,47 @@ public class DetailsActivity extends AppCompatActivity implements ICallBack{
 
     }
 
-    private void setView(String result){
+    private void setView(String result) {
         Gson gson = new Gson();
-        LibaoDetails libaoDetails = gson.fromJson(result, LibaoDetails.class);
-        String addtime = libaoDetails.getInfo().getAddtime();
-        int exchanges = libaoDetails.getInfo().getExchanges();
-        String explains = libaoDetails.getInfo().getExplains();
-        String descs = libaoDetails.getInfo().getDescs();
-        String giftname = libaoDetails.getInfo().getGiftname();
-        String iconurl = headString+libaoDetails.getInfo().getIconurl();
-        String gname = libaoDetails.getInfo().getGname();
-        mTitleTxt.setText(gname+"-"+giftname);
-        BitmapUtils.load(iconurl).compress(12100).callBack(new ICallBack() {
-            @Override
-            public void successJson(String result, int requestCode) {
+        JSONObject jsonObject = null;
+        try {
+            jsonObject = new JSONObject(result);
+            String info = jsonObject.getString("info");
+            LibaoDetails libaoDetails = gson.fromJson(info, LibaoDetails.class);
+            String addtime = libaoDetails.getOvertime();
+            int exchanges = libaoDetails.getExchanges();
+            String explains = libaoDetails.getExplains();
+            String descs = libaoDetails.getDescs();
+            String giftname = libaoDetails.getGiftname();
+            String iconurl = headString + libaoDetails.getIconurl();
+            String gname = libaoDetails.getGname();
+            mTitleTxt.setText(gname + "-" + giftname);
+            BitmapUtils.load(iconurl).compress(12100).callBack(new ICallBack() {
+                @Override
+                public void successJson(String result, int requestCode) {
 
-            }
-
-            @Override
-            public void successBitmap(Bitmap bitmap, int requestCode) {
-                if (requestCode == 6){
-                    circleImageView.setImageBitmap(bitmap);
                 }
-            }
-        },6);
-        mTimeTxt.setText(addtime);
-        mNumberTxt.setText(exchanges+"");
-        mExplainTxt.setText(explains);
-        mDescsTxt.setText(descs);
-        if (exchanges == 0){
-            mGetBtn.setText("马上淘号");
-        }else {
+
+                @Override
+                public void successBitmap(Bitmap bitmap, int requestCode) {
+                    if (requestCode == 6) {
+                        circleImageView.setImageBitmap(bitmap);
+                    }
+                }
+            }, 6);
+            mTimeTxt.setText(addtime);
+            mNumberTxt.setText(exchanges + "");
+            mExplainTxt.setText(explains);
+            mDescsTxt.setText(descs);
+            if (exchanges == 0) {
+                mGetBtn.setText("马上淘号");
+            } else {
 //            mGetBtn.setText("");
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
+
     }
 
 }

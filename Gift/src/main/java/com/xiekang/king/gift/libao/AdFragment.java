@@ -117,9 +117,7 @@ public class AdFragment extends Fragment implements ICallBack {
             try {
                 JSONObject jsonObj = new JSONObject(result);
                 JSONArray jsonArray = jsonObj.getJSONArray("ad");
-                Log.d("androidxxx", "successJson: jsonArray:" + jsonArray);
                 int length = jsonArray.length();
-                Log.d("androidxxx", "successJson: length" + length);
                 for (int i = 0; i < length; i++) {
                     if (i == 0) {
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
@@ -147,7 +145,6 @@ public class AdFragment extends Fragment implements ICallBack {
                         String iconurl = headString + jsonObject.getString("iconurl");
                         adInfroList.add(new AdInfro(id, title, flag, iconurl, addtime, null, giftid, appName, appLogo, appId));
                     }
-                    Log.d("androidxxx", "successJson:adInfroList.size: " + adInfroList.size());
                 }
                 myPagerAdapter.notifyDataSetChanged();
             } catch (JSONException e) {
@@ -171,7 +168,6 @@ public class AdFragment extends Fragment implements ICallBack {
         @Override
         public int getCount() {
 
-            Log.d("androidxxx", "getCount: size:" + adInfroList.size());
             return adInfroList.size();
         }
 
@@ -203,7 +199,6 @@ public class AdFragment extends Fragment implements ICallBack {
 
                     @Override
                     public void successBitmap(Bitmap bitmap, int requestCode) {
-                        Log.d("androidxxx", "successBitmap: ");
                         if (imageView.getTag() == iconurl) {
                             imageView.setImageBitmap(bitmap);
                             imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);

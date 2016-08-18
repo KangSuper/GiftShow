@@ -5,7 +5,9 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -30,6 +32,12 @@ public class MainActivity extends BaseActivity {
     private ImageView mMenuImg;
     private TextView mTextTxt;
     private TextView mSearchTxt;
+    private DrawerLayout mDrawerLayout;
+    private TextView mLoadTxt;
+    private TextView mHomeTxt;
+    private TextView mGift;
+    private TextView mOpitionTxt;
+    private TextView mAboutTxt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,13 +67,51 @@ public class MainActivity extends BaseActivity {
             }
         });
         supportActionBar.setCustomView(view);
+
+
+
     }
 
 
     private void initView() {
         mRadioGroup = (RadioGroup) findViewById(R.id.gift_radio_group);
         mRadioGroup.setOnCheckedChangeListener(checkedChangeListener);
+        //初始化抽屉控件
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_drawer_layout);
+
+        mLoadTxt = (TextView) findViewById(R.id.drawer_load_txt);
+        mHomeTxt = (TextView) findViewById(R.id.drawer_home_text_view);
+        mGift = (TextView) findViewById(R.id.drawer_gift_text_view);
+        mOpitionTxt = (TextView) findViewById(R.id.drawer_option_text_view);
+        mAboutTxt = (TextView) findViewById(R.id.drawer_about_text_view);
+
+        mMenuImg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mDrawerLayout.openDrawer(Gravity.LEFT);
+            }
+        });
+
+        mHomeTxt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mDrawerLayout.closeDrawers();
+            }
+        });
+
+        mLoadTxt.setOnClickListener(loadListener);
+        mGift.setOnClickListener(loadListener);
+        mOpitionTxt.setOnClickListener(loadListener);
+        mAboutTxt.setOnClickListener(loadListener);
     }
+
+    private View.OnClickListener loadListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Intent intent = new Intent(MainActivity.this,LoadActivity.class);
+            startActivity(intent);
+        }
+    };
 
 
     private RadioGroup.OnCheckedChangeListener checkedChangeListener = new RadioGroup.OnCheckedChangeListener() {

@@ -31,4 +31,11 @@
         android:layout_marginRight="15dp"
         app:civ_border_color="#fe8801"
         app:civ_border_width="3dp" />
+
+    <ImageView
+        android:src="@drawable/alpha_shape"
+        android:layout_alignBottom="@id/weekly_item_game_image_view"
+        android:layout_alignTop="@id/weekly_item_author_iamge_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 </RelativeLayout>

@@ -5,7 +5,7 @@
 
 
     <ImageButton
-        android:id="@+id/yx_back_image_view"
+        android:id="@+id/load_back_image_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
@@ -14,13 +14,23 @@
 
 
     <TextView
-        android:id="@+id/yx_title_text_view"
+        android:id="@+id/load_title_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="18dp"
+        android:textSize="20dp"
         android:textColor="#FFFFFF"
+        android:text="会员登录"
         android:layout_centerInParent="true"/>
 
+    <TextView
+        android:id="@+id/load_register_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="注册"
+        android:textSize="20dp"
+        android:layout_centerVertical="true"
+        android:layout_alignParentRight="true"
+        android:textColor="#ffffff"/>
 
 
 </RelativeLayout>

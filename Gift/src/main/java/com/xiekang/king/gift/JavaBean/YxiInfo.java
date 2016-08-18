@@ -122,7 +122,4 @@ public class YxiInfo {
         return appSize;
     }
 
-    public List<String> getImageList() {
-        return imageList;
-    }
 }
