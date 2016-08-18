@@ -207,6 +207,16 @@ public class BaodaActivity extends AppCompatActivity implements ICallBack{
                 }
             });
 
+            viewHodler.downBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent();
+                    intent.putExtra("id",bdaChlidInfo.getAppid());
+                    intent.setClass(BaodaActivity.this, YouxiDetailsActivity.class);
+                    startActivity(intent);
+                }
+            });
+
             return convertView;
         }
 

@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.xiekang.king.gift.JavaBean.LibaoDetails;
@@ -33,7 +34,6 @@ public class DetailsActivity extends AppCompatActivity implements ICallBack {
     private TextView mDescsTxt;
     private String urlString = "http://www.1688wan.com/majax.action?method=getGiftInfo";
     public static final String headString = "http://www.1688wan.com/";
-    private String TAG = "details";
     private Button mGetBtn;
     private ImageButton mBackImageBtn;
     private TextView mTitleTxt;
@@ -62,6 +62,12 @@ public class DetailsActivity extends AppCompatActivity implements ICallBack {
 
         mTitleTxt = (TextView) view.findViewById(R.id.title_text_view);
         mShareImageBtn = (ImageButton) view.findViewById(R.id.share_image_view);
+        mShareImageBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(DetailsActivity.this,"已发送给其他小主,请继续浏览",Toast.LENGTH_SHORT).show();
+            }
+        });
         supportActionBar.setCustomView(view);
     }
 
@@ -142,6 +148,16 @@ public class DetailsActivity extends AppCompatActivity implements ICallBack {
             } else {
 //            mGetBtn.setText("");
             }
+
+            mGetBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(DetailsActivity.this,LoadActivity.class);
+                    startActivity(intent);
+                }
+            });
+
+
         } catch (JSONException e) {
             e.printStackTrace();
         }

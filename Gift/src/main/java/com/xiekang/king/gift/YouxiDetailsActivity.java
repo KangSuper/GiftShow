@@ -46,6 +46,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class YouxiDetailsActivity extends AppCompatActivity implements ICallBack {
 
@@ -67,6 +70,9 @@ public class YouxiDetailsActivity extends AppCompatActivity implements ICallBack
     private NotificationManager notificationManager;
     private Notification.Builder builder;
     private final File externalStoragePublicDirectory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+    private ExecutorService executorService;
+    private int notificationNum;
+
 
     private Handler mHandler = new Handler(){
         @Override
@@ -85,6 +91,7 @@ public class YouxiDetailsActivity extends AppCompatActivity implements ICallBack
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_youxi_details);
         notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        executorService = Executors.newFixedThreadPool(3);
         initActionBar();
         getIntentFromFragment();
         initView();
@@ -165,16 +172,17 @@ public class YouxiDetailsActivity extends AppCompatActivity implements ICallBack
         if (download_addr.equals("")) {
             mDownBtn.setText("暂无下载");
             mDownBtn.setBackgroundColor(Color.GRAY);
-            mDownBtn.setClickable(false);
+            mDownBtn.setEnabled(false);
         } else {
             mDownBtn.setText("立即下载");
             mDownBtn.setBackgroundColor(Color.rgb(251, 67, 62));
-            mDownBtn.setClickable(true);
+            mDownBtn.setEnabled(true);
         }
         //下载按钮的监听
         mDownBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                mPath = getPath(yxiInfo.getDownload_addr());
                 File file = new File(externalStoragePublicDirectory +mPath);
                 if (file.exists()) {
                     Toast.makeText(YouxiDetailsActivity.this, "已经下载", Toast.LENGTH_SHORT).show();
@@ -182,9 +190,8 @@ public class YouxiDetailsActivity extends AppCompatActivity implements ICallBack
                     return;
                 }
                 showNotification();
-                mPath = getPath(yxiInfo.getDownload_addr());
                 Toast.makeText(YouxiDetailsActivity.this, "正在下载", Toast.LENGTH_SHORT).show();
-                new Thread(new DownRunnable(yxiInfo.getDownload_addr())).start();
+                executorService.execute(new DownRunnable(yxiInfo.getDownload_addr()));
                 mDownBtn.setText("正在下载");
                 mDownBtn.setBackgroundColor(Color.GRAY);
                 mDownBtn.setClickable(false);
@@ -313,19 +320,25 @@ public class YouxiDetailsActivity extends AppCompatActivity implements ICallBack
                 URL url = new URL(downLoad_addr);
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                 connection.connect();
+                int contentLength = connection.getContentLength();
                 if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
                     fileOutputStream = new FileOutputStream(externalStoragePublicDirectory + mPath);
                     inputStream = connection.getInputStream();
                     int len = 0;
+                    int downSize = 0;
                     byte buffer[] = new byte[1024];
                     while ((len = inputStream.read(buffer)) != -1) {
                         fileOutputStream.write(buffer, 0, len);
                         Log.d(TAG, "run: len:"+len);
+                        downSize = downSize + len;
+                        builder.setProgress(contentLength,downSize,false);
+                        builder.setContentText("已下载"+downSize/1000+"KB/"+contentLength/1000+"KB");
+                        notificationManager.notify(notificationNum,builder.getNotification());
                     }
                     fileOutputStream.flush();
                     builder.setContentTitle("提示");
-                    builder.setContentText("下载完成");
-                    notificationManager.notify(88002201,builder.getNotification());
+                    builder.setContentText(yxiInfo.getName()+"下载完成");
+                    notificationManager.notify(notificationNum,builder.getNotification());
                     Message message = mHandler.obtainMessage();
                     message.what = 1;
                     message.sendToTarget();
@@ -341,9 +354,10 @@ public class YouxiDetailsActivity extends AppCompatActivity implements ICallBack
     private void showNotification() {
         builder = new Notification.Builder(this);
         builder.setSmallIcon(R.drawable.applogo);
-        builder.setContentTitle("正在下载...");
+        builder.setContentTitle(yxiInfo.getName()+"....正在下载...");
         Notification notification = builder.getNotification();
-        notificationManager.notify(88002201,notification);
+        notificationNum = new Random().nextInt(Integer.MAX_VALUE);
+        notificationManager.notify(notificationNum,notification);
     }
 
     private void install(){

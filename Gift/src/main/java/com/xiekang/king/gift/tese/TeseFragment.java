@@ -43,8 +43,8 @@ public class TeseFragment extends Fragment {
     private void loadFragment() {
         fragmentList.add(BaodaFragment.newInstance());
         fragmentList.add(WeeklyFragment.newInstance());
-        titles.add("         暴打星期三              ");
-        titles.add("         新游周刊                ");
+        titles.add("暴打星期三");
+        titles.add("新游周刊");
     }
 
     public static TeseFragment newInstance(){

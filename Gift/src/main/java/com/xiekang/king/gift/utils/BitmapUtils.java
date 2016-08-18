@@ -83,7 +83,6 @@ public class BitmapUtils {
          */
         private HttpThread start(String urlString) {
             executorService.execute(new ImageRunnable(urlString));
-            Log.d("androidxx", "start: ");
             return this;
         }
 

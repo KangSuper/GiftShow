@@ -2,12 +2,15 @@ package com.xiekang.king.gift;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -18,9 +21,11 @@ import android.widget.Toast;
 import com.xiekang.king.gift.hot.HotFragment;
 import com.xiekang.king.gift.libao.LibaoFragment;
 import com.xiekang.king.gift.tese.TeseFragment;
+import com.xiekang.king.gift.utils.InfoCallBack;
+import com.xiekang.king.gift.youxi.KaifuFragment;
 import com.xiekang.king.gift.youxi.YouxiFragment;
 
-public class MainActivity extends BaseActivity {
+public class MainActivity extends BaseActivity implements InfoCallBack{
 
     private RadioGroup mRadioGroup;
     private FragmentManager mFragmentManager;
@@ -36,8 +41,22 @@ public class MainActivity extends BaseActivity {
     private TextView mLoadTxt;
     private TextView mHomeTxt;
     private TextView mGift;
+    private TextView mCountTxt;
     private TextView mOpitionTxt;
     private TextView mAboutTxt;
+    private boolean isExit;
+    private Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            isExit = false;
+            if (msg.what == 1){
+                mTextTxt.setVisibility(View.VISIBLE);
+                mCountTxt.setVisibility(View.INVISIBLE);
+                mCountTxt.setText("");
+            }
+        }
+    };
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,17 +76,16 @@ public class MainActivity extends BaseActivity {
         mMenuImg = (ImageView) view.findViewById(R.id.bar_menu_view);
         mTextTxt = (TextView) view.findViewById(R.id.bar_text_view);
         mSearchTxt = (TextView) view.findViewById(R.id.bar_search_text);
-
+        mCountTxt = (TextView) view.findViewById(R.id.bar_count_text);
         mSearchTxt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this,SearchActivity.class);
-                Toast.makeText(MainActivity.this,"搜索",Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(MainActivity.this, SearchActivity.class);
+                Toast.makeText(MainActivity.this, "搜索", Toast.LENGTH_SHORT).show();
                 startActivity(intent);
             }
         });
         supportActionBar.setCustomView(view);
-
 
 
     }
@@ -108,7 +126,7 @@ public class MainActivity extends BaseActivity {
     private View.OnClickListener loadListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            Intent intent = new Intent(MainActivity.this,LoadActivity.class);
+            Intent intent = new Intent(MainActivity.this, LoadActivity.class);
             startActivity(intent);
         }
     };
@@ -142,7 +160,7 @@ public class MainActivity extends BaseActivity {
         }
     };
 
-    private void initFragment(){
+    private void initFragment() {
         libaoFragment = LibaoFragment.newInstance();
         youxiFragment = YouxiFragment.newInstance();
         hotFragment = HotFragment.newInstance();
@@ -151,10 +169,8 @@ public class MainActivity extends BaseActivity {
     }
 
 
-
     /**
-     *
-     * @param fragment  当前要显示的Fragment
+     * @param fragment 当前要显示的Fragment
      */
     private void ctrlFragment(Fragment fragment) {
         FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
@@ -162,7 +178,7 @@ public class MainActivity extends BaseActivity {
             fragmentTransaction.hide(mCurrentShowFragment);
         }
         if (!fragment.isAdded()) {
-            fragmentTransaction.add(R.id.main_frame_layout,fragment);
+            fragmentTransaction.add(R.id.main_frame_layout, fragment);
         } else {
             fragmentTransaction.show(fragment);
         }
@@ -170,5 +186,35 @@ public class MainActivity extends BaseActivity {
         fragmentTransaction.commit();
 
         mCurrentShowFragment = fragment;
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            exit();
+            return false;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
+    private void exit() {
+        if (!isExit) {
+            isExit = true;
+            Toast.makeText(getApplicationContext(), "再按一次退出程序",
+                    Toast.LENGTH_SHORT).show();
+            // 利用handler延迟发送更改状态信息
+            mHandler.sendEmptyMessageDelayed(0, 2000);
+        } else {
+            finish();
+            System.exit(0);
+        }
+    }
+
+    @Override
+    public void dataCount(int count) {
+        mTextTxt.setVisibility(View.INVISIBLE);
+        mCountTxt.setVisibility(View.VISIBLE);
+        mCountTxt.setText("共发现"+count+"条数据");
+        mHandler.sendEmptyMessageDelayed(1,2000);
     }
 }

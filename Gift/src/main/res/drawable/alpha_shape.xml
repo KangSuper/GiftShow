@@ -3,7 +3,7 @@
     android:shape="rectangle" >
     <corners android:radius="5dp" />
     <!-- 这是半透明，还可以设置全透明，那就是白色边框的效果了 -->
-    <solid android:color="#75276e94" />
+    <solid android:color="#6e7d8486" />
     <stroke
         android:dashGap="0dp"
         android:width="0dp"

@@ -37,4 +37,11 @@
         android:textColor="#ffffff"
         android:textSize="18dp" />
 
+    <ImageView
+        android:src="@drawable/alpha_shape"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@id/baoda_item_name_txt"
+        android:layout_alignBottom="@id/baoda_item_image_view"/>
+
 </RelativeLayout>

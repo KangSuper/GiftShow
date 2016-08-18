@@ -21,11 +21,13 @@ import android.widget.TextView;
 import com.google.gson.Gson;
 import com.xiekang.king.gift.JavaBean.HotGridInfo;
 import com.xiekang.king.gift.JavaBean.HotListInfo;
+import com.xiekang.king.gift.MainActivity;
 import com.xiekang.king.gift.R;
 import com.xiekang.king.gift.YouxiDetailsActivity;
 import com.xiekang.king.gift.utils.BitmapUtils;
 import com.xiekang.king.gift.utils.HttpUtils;
 import com.xiekang.king.gift.utils.ICallBack;
+import com.xiekang.king.gift.utils.InfoCallBack;
 import com.xiekang.king.gift.utils.LruCacheTool;
 
 import org.json.JSONArray;
@@ -49,13 +51,15 @@ public class HotFragment extends Fragment implements ICallBack{
     private List<HotGridInfo> hotGridInfoList = new ArrayList<>();
     private MyAdapter myAdapter;
     private MyGridAdapter myGridAdapter;
-
+    private InfoCallBack infoCallBack;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         HttpUtils.load(urlString).callBack(this,15);
         super.onCreate(savedInstanceState);
         mContext = getContext();
-
+        if (mContext instanceof MainActivity){
+            infoCallBack = (InfoCallBack) mContext;
+        }
     }
 
     public static HotFragment newInstance(){
@@ -96,6 +100,7 @@ public class HotFragment extends Fragment implements ICallBack{
                     hotGridInfoList.add(hotGridInfo);
                 }
                 myGridAdapter.notifyDataSetChanged();
+                infoCallBack.dataCount(hotGridInfoList.size()+hotGridInfoList.size());
             } catch (JSONException e) {
                 e.printStackTrace();
             }

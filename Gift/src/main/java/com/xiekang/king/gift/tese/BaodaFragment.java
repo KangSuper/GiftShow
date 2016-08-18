@@ -25,6 +25,7 @@ import com.xiekang.king.gift.R;
 import com.xiekang.king.gift.utils.BitmapUtils;
 import com.xiekang.king.gift.utils.HttpUtils;
 import com.xiekang.king.gift.utils.ICallBack;
+import com.xiekang.king.gift.utils.InfoCallBack;
 import com.xiekang.king.gift.utils.LruCacheTool;
 
 import org.json.JSONArray;
@@ -47,12 +48,16 @@ public class BaodaFragment extends Fragment implements ICallBack{
     private ListView mListView;
     private List<BdaInfo> bdaInfoList = new ArrayList<>();
     private MyAdapter mAdapter;
+    private InfoCallBack infoCallBack;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mContext = getContext();
         HttpUtils.load(urlString).callBack(this,19);
+        if (mContext instanceof MainActivity){
+            infoCallBack = (InfoCallBack) mContext;
+        }
     }
 
     public static BaodaFragment newInstance(){
@@ -86,6 +91,7 @@ public class BaodaFragment extends Fragment implements ICallBack{
                     BdaInfo bdaInfo = gson.fromJson(jsonArray.get(i).toString(), BdaInfo.class);
                     bdaInfoList.add(bdaInfo);
                 }
+                infoCallBack.dataCount(bdaInfoList.size());
                 mAdapter.notifyDataSetChanged();
             } catch (JSONException e) {
                 e.printStackTrace();

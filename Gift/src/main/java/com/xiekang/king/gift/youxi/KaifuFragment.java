@@ -18,11 +18,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.xiekang.king.gift.JavaBean.KaifuInfo;
+import com.xiekang.king.gift.MainActivity;
 import com.xiekang.king.gift.R;
 import com.xiekang.king.gift.YouxiDetailsActivity;
 import com.xiekang.king.gift.utils.BitmapUtils;
 import com.xiekang.king.gift.utils.HttpUtils;
 import com.xiekang.king.gift.utils.ICallBack;
+import com.xiekang.king.gift.utils.InfoCallBack;
 import com.xiekang.king.gift.utils.LruCacheTool;
 
 import org.json.JSONArray;
@@ -52,6 +54,7 @@ public class KaifuFragment extends Fragment implements ICallBack {
     private ExpandableListView expandList;
     private Context mContext;
     private MyAdapter mAdapter;
+    private InfoCallBack infoCallBack ;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -59,7 +62,9 @@ public class KaifuFragment extends Fragment implements ICallBack {
         HttpUtils.load(urlString).callBack(this, 7);
         mContext = getContext();
         super.onCreate(savedInstanceState);
-
+        if (context instanceof MainActivity){
+            infoCallBack = (InfoCallBack) context;
+        }
     }
 
     public static KaifuFragment newInstance() {
@@ -93,11 +98,8 @@ public class KaifuFragment extends Fragment implements ICallBack {
                     String addtime = kaifuInfo.getAddtime();
                     if (addtime.equals(time)) {
                         kaifuInfos.add(kaifuInfo);
-                        Log.d(TAG, "successJson: addTime:" + addtime);
-                        Log.d(TAG, "successJson: timeList:" + timeList.get(i));
                     }
                 }
-                Log.d(TAG, "successJson: time:" + timeList.get(i) + "   ");
                 mapData.put(timeList.get(i), kaifuInfos);
             }
             for (int i = 0; i < timeList.size(); i++) {
@@ -274,6 +276,7 @@ public class KaifuFragment extends Fragment implements ICallBack {
                 timeSet.add(addtime);
                 kaifuInfoList.add(kaifuInfo);
             }
+            infoCallBack.dataCount(kaifuInfoList.size());
         } catch (JSONException e) {
             e.printStackTrace();
         }

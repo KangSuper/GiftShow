@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.graphics.RectF;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -12,7 +11,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,10 +24,12 @@ import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.xiekang.king.gift.DetailsActivity;
 import com.xiekang.king.gift.JavaBean.LibaoInfo;
+import com.xiekang.king.gift.MainActivity;
 import com.xiekang.king.gift.R;
 import com.xiekang.king.gift.utils.BitmapUtils;
 import com.xiekang.king.gift.utils.HttpUtils;
 import com.xiekang.king.gift.utils.ICallBack;
+import com.xiekang.king.gift.utils.InfoCallBack;
 import com.xiekang.king.gift.utils.LruCacheTool;
 
 import org.json.JSONArray;
@@ -59,6 +59,7 @@ public class LibaoFragment extends Fragment implements ICallBack {
     private List<LibaoInfo> giftList;
     private int page = 1;
     private PullToRefreshListView refreshView;
+    private InfoCallBack infoCallBack;
 
     private Handler mHandler = new Handler() {
         @Override
@@ -74,6 +75,9 @@ public class LibaoFragment extends Fragment implements ICallBack {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mContext = getContext();
+        if (mContext instanceof MainActivity) {
+            infoCallBack = (InfoCallBack) mContext;
+        }
         fragmentManager = getFragmentManager();
         giftList = new ArrayList<>();
 
@@ -203,8 +207,9 @@ public class LibaoFragment extends Fragment implements ICallBack {
                 String operators = jsonObject.getString("operators");
                 int flag = jsonObject.getInt("flag");
                 giftList.add(new LibaoInfo(id, iconurl, giftname, number, exchanges, type, gname, integral, isintegral, addtime, ptype, operators, flag));
-                mLibaoAdapter.notifyDataSetChanged();
             }
+            mLibaoAdapter.notifyDataSetChanged();
+            infoCallBack.dataCount(giftList.size());
         } catch (JSONException e) {
             e.printStackTrace();
         }

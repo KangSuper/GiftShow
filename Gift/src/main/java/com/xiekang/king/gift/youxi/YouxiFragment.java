@@ -46,8 +46,8 @@ public class YouxiFragment extends Fragment {
         kaifuFragment = KaifuFragment.newInstance();
         fragmentList.add(kaifuFragment);
         fragmentList.add(kaiceFragment);
-        titles.add("                       开服                             ");
-        titles.add("                       开测                             ");
+        titles.add("开服");
+        titles.add("开测");
     }
 
     public static YouxiFragment newInstance() {

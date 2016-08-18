@@ -18,11 +18,13 @@ import android.widget.TextView;
 
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.xiekang.king.gift.JavaBean.KaiceInfo;
+import com.xiekang.king.gift.MainActivity;
 import com.xiekang.king.gift.R;
 import com.xiekang.king.gift.YouxiDetailsActivity;
 import com.xiekang.king.gift.utils.BitmapUtils;
 import com.xiekang.king.gift.utils.HttpUtils;
 import com.xiekang.king.gift.utils.ICallBack;
+import com.xiekang.king.gift.utils.InfoCallBack;
 import com.xiekang.king.gift.utils.LruCacheTool;
 
 import org.json.JSONArray;
@@ -44,12 +46,15 @@ public class KaiceFragment extends Fragment implements ICallBack{
     private ListView mListView;
     private List<KaiceInfo> kaiceInfoList = new ArrayList<>();
     private MyAdapter mAdapter;
-
+    private InfoCallBack infoCallBack;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         context = getContext();
         HttpUtils.load(urlString).callBack(this, 9);
         super.onCreate(savedInstanceState);
+        if (context instanceof MainActivity){
+            infoCallBack = (InfoCallBack) context;
+        }
     }
 
     public static KaiceFragment newInstance() {

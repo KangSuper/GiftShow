@@ -19,11 +19,13 @@ import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.xiekang.king.gift.JavaBean.BdaInfo;
 import com.xiekang.king.gift.JavaBean.WeeklyInfo;
+import com.xiekang.king.gift.MainActivity;
 import com.xiekang.king.gift.R;
 import com.xiekang.king.gift.WeeklyActivity;
 import com.xiekang.king.gift.utils.BitmapUtils;
 import com.xiekang.king.gift.utils.HttpUtils;
 import com.xiekang.king.gift.utils.ICallBack;
+import com.xiekang.king.gift.utils.InfoCallBack;
 import com.xiekang.king.gift.utils.LruCacheTool;
 
 import org.json.JSONArray;
@@ -46,12 +48,15 @@ public class WeeklyFragment extends Fragment implements ICallBack{
     private ListView mListView;
     private MyAdapter mAdapter;
     private List<WeeklyInfo> weeklyInfoList = new ArrayList<>();
-
+    private InfoCallBack infoCallBack;
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mContext = getContext();
         HttpUtils.load(urlString).callBack(this,21);
+        if (mContext instanceof MainActivity){
+            infoCallBack = (InfoCallBack) mContext;
+        }
     }
 
     public static WeeklyFragment newInstance(){
