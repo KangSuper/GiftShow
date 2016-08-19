@@ -24,6 +24,7 @@ import com.xiekang.king.gift.JavaBean.HotListInfo;
 import com.xiekang.king.gift.MainActivity;
 import com.xiekang.king.gift.R;
 import com.xiekang.king.gift.YouxiDetailsActivity;
+import com.xiekang.king.gift.customview.CustomGridView;
 import com.xiekang.king.gift.utils.BitmapUtils;
 import com.xiekang.king.gift.utils.HttpUtils;
 import com.xiekang.king.gift.utils.ICallBack;
@@ -46,7 +47,7 @@ public class HotFragment extends Fragment implements ICallBack{
     public static final String headString = "http://www.1688wan.com/";
     private Context mContext;
     private ListView mListView;
-    private GridView mGridView;
+    private CustomGridView mGridView;
     private List<HotListInfo> hotListInfoList = new ArrayList<>();
     private List<HotGridInfo> hotGridInfoList = new ArrayList<>();
     private MyAdapter myAdapter;
@@ -74,7 +75,7 @@ public class HotFragment extends Fragment implements ICallBack{
         mListView = (ListView) view.findViewById(R.id.hot_list_view);
         myAdapter = new MyAdapter();
         mListView.setAdapter(myAdapter);
-        mGridView = (GridView) view.findViewById(R.id.hot_grid_view);
+        mGridView = (CustomGridView) view.findViewById(R.id.hot_grid_view);
         myGridAdapter = new MyGridAdapter();
         mGridView.setAdapter(myGridAdapter);
         return view;
@@ -100,7 +101,7 @@ public class HotFragment extends Fragment implements ICallBack{
                     hotGridInfoList.add(hotGridInfo);
                 }
                 myGridAdapter.notifyDataSetChanged();
-                infoCallBack.dataCount(hotGridInfoList.size()+hotGridInfoList.size());
+                infoCallBack.dataCount(hotListInfoList.size()+hotGridInfoList.size());
             } catch (JSONException e) {
                 e.printStackTrace();
             }

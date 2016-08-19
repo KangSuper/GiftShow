@@ -30,6 +30,7 @@ import com.xiekang.king.gift.utils.BitmapUtils;
 import com.xiekang.king.gift.utils.HttpUtils;
 import com.xiekang.king.gift.utils.ICallBack;
 import com.xiekang.king.gift.utils.LruCacheTool;
+import com.xiekang.king.gift.utils.MyThreadPool;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -70,7 +71,7 @@ public class YouxiDetailsActivity extends AppCompatActivity implements ICallBack
     private NotificationManager notificationManager;
     private Notification.Builder builder;
     private final File externalStoragePublicDirectory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
-    private ExecutorService executorService;
+//    private ExecutorService executorService;
     private int notificationNum;
 
 
@@ -91,7 +92,7 @@ public class YouxiDetailsActivity extends AppCompatActivity implements ICallBack
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_youxi_details);
         notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        executorService = Executors.newFixedThreadPool(3);
+//        executorService = Executors.newFixedThreadPool(3);
         initActionBar();
         getIntentFromFragment();
         initView();
@@ -191,7 +192,7 @@ public class YouxiDetailsActivity extends AppCompatActivity implements ICallBack
                 }
                 showNotification();
                 Toast.makeText(YouxiDetailsActivity.this, "正在下载", Toast.LENGTH_SHORT).show();
-                executorService.execute(new DownRunnable(yxiInfo.getDownload_addr()));
+                MyThreadPool.executorService.execute(new DownRunnable(yxiInfo.getDownload_addr()));
                 mDownBtn.setText("正在下载");
                 mDownBtn.setBackgroundColor(Color.GRAY);
                 mDownBtn.setClickable(false);
@@ -298,10 +299,8 @@ public class YouxiDetailsActivity extends AppCompatActivity implements ICallBack
     }
 
     private String getPath(String address){
-        String temp = address;
-        int index = temp.lastIndexOf("/");
-        String substring = address.substring(index);
-        return substring;
+        int index = address.lastIndexOf("/");
+         return address.substring(index);
     }
 
     class DownRunnable implements Runnable {
@@ -314,8 +313,8 @@ public class YouxiDetailsActivity extends AppCompatActivity implements ICallBack
 
         @Override
         public void run() {
-            InputStream inputStream = null;
-            FileOutputStream fileOutputStream = null;
+            InputStream inputStream;
+            FileOutputStream fileOutputStream;
             try {
                 URL url = new URL(downLoad_addr);
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -324,7 +323,7 @@ public class YouxiDetailsActivity extends AppCompatActivity implements ICallBack
                 if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
                     fileOutputStream = new FileOutputStream(externalStoragePublicDirectory + mPath);
                     inputStream = connection.getInputStream();
-                    int len = 0;
+                    int len;
                     int downSize = 0;
                     byte buffer[] = new byte[1024];
                     while ((len = inputStream.read(buffer)) != -1) {

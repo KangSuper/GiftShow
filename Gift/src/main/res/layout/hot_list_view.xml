@@ -26,9 +26,10 @@
         android:text="热门推荐"
         android:textSize="22dp" />
 
-    <GridView
+    <com.xiekang.king.gift.customview.CustomGridView
         android:id="@+id/hot_grid_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:numColumns="3"/>
+
 </LinearLayout>
